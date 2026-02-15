@@ -14,7 +14,7 @@ const priorityColors = {
   low: 'bg-slate-500/20 text-slate-400 border-slate-500/30'
 };
 
-function TaskCard({ task, columnId, onDrop }) {
+function TaskCard({ task, columnId, theme, onDrop }) {
   const handleDragStart = (e) => {
     e.dataTransfer.setData('taskId', task.id);
     e.dataTransfer.setData('fromColumn', columnId);
@@ -91,7 +91,7 @@ function KanbanBoard({ tasks, setTasks, theme }) {
               </div>
               <div className="space-y-3">
                 {columnTasks.map(task => (
-                  <TaskCard key={task.id} task={task} columnId={columnId} />
+                  <TaskCard key={task.id} task={task} columnId={columnId} theme={theme} />
                 ))}
                 {columnTasks.length === 0 && (
                   <div className="text-center py-8 text-slate-500 text-sm">No tasks</div>

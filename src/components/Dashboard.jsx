@@ -53,8 +53,8 @@ function Dashboard({ tasks = {}, theme }) {
     const metricsResult = await getMetrics();
     if (metricsResult.success && metricsResult.data) {
       const newMetrics = { ...defaultMetrics };
-      Object.keys(result.data).forEach(key => {
-        if (newMetrics[key]) newMetrics[key] = { ...newMetrics[key], ...result.data[key] };
+      Object.keys(metricsResult.data).forEach(key => {
+        if (newMetrics[key]) newMetrics[key] = { ...newMetrics[key], ...metricsResult.data[key] };
       });
       setMetrics(newMetrics);
     }

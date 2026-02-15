@@ -36,7 +36,7 @@
 ### 🟢 DOING
 > Active work right now
 
-- Running West Africa scraper (afrikta, allbusiness, afrobiz, africalistings)
+- ✅ Leads synced to Firestore (124 leads available in Mission Control)
 
 ### 🔵 DONE
 > Completed items
@@ -107,28 +107,114 @@
 | africalistings.com | Pan-Africa | Unknown | B2B listings | Name, Email, Phone |
 | pme.gouv.ci (PDF) | Côte d'Ivoire | ~100+ | Official PME list | Name only |
 
-## 📧 West African Email Sequences
+## 📧 Email Sequences - Ready to Use
 
-**Location:** `memory/email-sequences.md`
+### 📧 Sequence 1: Cold Outreach (French)
 
-### Sequences Created:
-1. **Cold Outreach** - 3 emails (Intro → Follow-up → Value Add)
-2. **Warm Outreach** - LinkedIn connection follow-up
-3. **Voicemail Script** - Phone call template
+**Email 1 - Introduction**
+```
+Subject: Simplify your business with Digibuntu ERP
 
-### Best Sending Times:
-| Country | Best Days | Best Hours |
-|---------|-----------|------------|
+Bonjour [FIRST_NAME],
+
+Je suis [VOTRE NOM] de Digibunta - une solution ERP conçue pour les PME africaines.
+
+Notre logiciel aide des entreprises comme [COMPANY] à:
+- Gagner du temps (automatisation de la comptabilité)
+- Réduire les erreurs (suivi en temps réel)
+- Prendre de meilleures décisions (rapports instantanés)
+
+Je serais ravi de vous montrer une démo gratuite de 15 minutes.
+
+Quand serait-il pratique pour vous?
+
+Cordialement,
+[VOTRE NOM]
+```
+
+**Email 2 - Follow-up (Day 3)**
+```
+Subject: Re: Simplify your business with Digibuntu ERP
+
+Bonjour [FIRSTNAME],
+
+J'espère que vous allez bien!
+
+Je me permets de vous relancer suite à mon dernier message concernant Digibuntu.
+
+Nous aidons déjà +100 PME en Afrique de l'Ouest à gérer leur entreprise plus efficacement.
+
+Avez-vous des questions sur nos fonctionnalités?
+
+Cordialement,
+[VOTRE NOM]
+```
+
+**Email 3 - Value Add (Day 7)**
+```
+Subject: [COMPANY] et l'avenir de la gestion d'entreprise
+
+Bonjour [FIRSTNAME],
+
+Je partage avec vous un article que j'ai trouvé pertinent: "[ARTICLE TITLE]"
+
+Cela m'a rappelé comment Digibuntu aide les PME à:
+- Réduire de 50% le temps consacré à la paperwork
+- Améliorer la précision des inventaires
+- Gagner 10h/semaine en moyenne
+
+Seriez-vous intéressé par une conversation de 10 minutes?
+
+À bientôt,
+[VOTRE NOM]
+```
+
+### 🎯 Sequence 2: LinkedIn Warm Outreach
+
+```
+Subject: Ravi de vous connecter sur LinkedIn
+
+Bonjour [FIRSTNAME],
+
+Merci d'avoir accepté ma demande de connexion!
+
+Je travaille chez Digibuntu, où nous aidons les PME africaines à digitaliser leur gestion.
+
+Je serais curieux d'en savoir plus sur [TOPIC RELATED TO THEIR POST/COMPANY].
+
+Avez-vous des défis particuliers dans la gestion de votre entreprise?
+
+Bien cordialement,
+[VOTRE NOM]
+```
+
+### 📞 Voicemail Script
+
+```
+Bonjour, c'est [VOTRE NOM] de Digibuntu.
+
+Je vous appelle car je pense que notre solution ERP pourrait aider [COMPANY] à gagner du temps sur la gestion quotidienne.
+
+Je rappellerai demain à [TIME]. Avez-vous 2 minutes?
+
+Merci et à bientôt!
+```
+
+### ⏰ Best Sending Times
+
+| Country | Days | Hours |
+|---------|------|-------|
 | Ivory Coast | Tue-Thu | 9-11h, 14-16h |
 | Senegal | Tue-Thu | 9-11h, 14-16h |
 | Ghana | Tue-Thu | 10-12h |
 | Nigeria | Tue-Thu | 10-12h |
 
-### Target Metrics:
+### 📊 Target Metrics
+
 - Opens: 40%
 - Clicks: 10%
 - Replies: 5%
-- Demos booked: 20/month
+- Demos: 20/month
 
 ---
 
@@ -178,6 +264,32 @@
 | 2026-02-15 | Prioritize Ivory Coast & Senegal | Focused market entry |
 | 2026-02-15 | Use GitHub for visual project management | Transparency |
 | 2026-02-15 | Daily briefing at 9:30 AM Baghdad | Consistent touchpoints |
+| 2026-02-15 | Auto-sync leads to Firestore | Real-time Mission Control |
+
+## 🔄 Lead Sync Status
+
+| Source | Scraped | Uploaded | Notes |
+|--------|---------|----------|-------|
+| AnnuaireCI.com | 7 | ✅ | Phones + websites |
+| Afrikta (CI,SN,GH,NG) | 46 | ✅ | Names + emails |
+| AllBusiness Africa | 0 | ✅ | - |
+| Africa Business Pages | 46 | ✅ | Names + emails |
+| Afrobiz Africa | 50 | ✅ | Names + emails |
+| **TOTAL** | **124** | **✅ FIRESTORE** | View in Leads tab |
+
+## 🛠️ Daily Commands
+
+```bash
+# Scrape new leads
+cd /data/workspace/Companion-OS-v2
+node scripts/westafrica_scrape.cjs
+
+# Sync to Firestore
+node scripts/import-leads.cjs
+
+# Deploy to Vercel
+git add -A && git commit -m "Update" && git push
+```
 
 ---
 

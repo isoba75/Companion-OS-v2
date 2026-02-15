@@ -29,14 +29,14 @@
 
 - [x] Repository setup (Companion-OS-v2)
 - [x] SCRAPE LEADS - 7 companies scraped from AnnuaireCI
-- [ ] SCRAPE MORE - Improve scraper to get emails
+- [x] **SCRAPE MORE - Enhanced scraper with phones, emails, socials extraction** ✅
 - [ ] INFLUENCER BRIEF - Create pitch deck for Ivory Coast influencers
 - [ ] COLD EMAIL SEQUENCE - Draft outreach emails
 
 ### 🟢 DOING
 > Active work right now
 
-- ✅ Mission Control v2 UI enhanced with professional design
+- Ready for next scrape run
 
 ### 🔵 DONE
 > Completed items
@@ -58,6 +58,13 @@
   - Smooth animations & transitions
   - Better color scheme & typography
   - Responsive cards & improved touch targets
+- ✅ **Lead Scraping Enhanced** (Feb 15, 2026)
+  - Extracts phones (+225, +221 formats)
+  - Extracts emails with regex patterns
+  - Extracts social media (Facebook, LinkedIn, Instagram, Twitter)
+  - Scrapes individual company pages for more data
+  - New LeadsTable UI with copy-to-clipboard, social indicators
+  - Contact stats: withEmail, withPhone, withWebsite counts
 
 ---
 
@@ -78,11 +85,24 @@
 
 ## 🔍 Lead Sources Discovered
 
-| Source | Country | Count | Format |
-|--------|---------|-------|--------|
-| AnnuaireCI.com | Côte d'Ivoire | 40,902 | Online directory |
-| pme.gouv.ci (PDF) | Côte d'Ivoire | ~100+ | Official PME list |
-| senegal-export.com | Senegal | Unknown | Professional annuaire |
+| Source | Country | Count | Format | Extracts |
+|--------|---------|-------|--------|----------|
+| AnnuaireCI.com | Côte d'Ivoire | 40,902 | Online directory | Phone, Email, Website, Socials |
+| pme.gouv.ci (PDF) | Côte d'Ivoire | ~100+ | Official PME list | Name only |
+| senegal-export.com | Senegal | Unknown | Professional annuaire | Name, Email |
+
+## 📧 Contact Extraction
+
+The enhanced scraper now extracts:
+- **Phones**: Ivory Coast (+225), Senegal (+221), generic formats
+- **Emails**: Regex pattern matching, mailto: links
+- **Socials**: Facebook, LinkedIn, Instagram, Twitter from profile pages
+
+Run enhanced scraper:
+```bash
+cd /data/workspace/Companion-OS-v2
+node scripts/enhanced_scrape.cjs
+```
 
 ---
 

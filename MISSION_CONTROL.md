@@ -28,15 +28,15 @@
 > Focus for the current week
 
 - [x] Repository setup (Companion-OS-v2)
-- [x] SCRAPE LEADS - 7 companies scraped from AnnuaireCI
+- [x] SCRAPE LEADS - 7 companies with phones scraped from AnnuaireCI
 - [x] **SCRAPE MORE - Enhanced scraper with phones, emails, socials extraction** ✅
+- [x] **COLD EMAIL SEQUENCE - Draft outreach emails created** ✅
 - [ ] INFLUENCER BRIEF - Create pitch deck for Ivory Coast influencers
-- [ ] COLD EMAIL SEQUENCE - Draft outreach emails
 
 ### 🟢 DOING
 > Active work right now
 
-- Ready for next scrape run
+- Running West Africa scraper (afrikta, allbusiness, afrobiz, africalistings)
 
 ### 🔵 DONE
 > Completed items
@@ -65,6 +65,18 @@
   - Scrapes individual company pages for more data
   - New LeadsTable UI with copy-to-clipboard, social indicators
   - Contact stats: withEmail, withPhone, withWebsite counts
+- ✅ **Email Sequences Created** (Feb 15, 2026)
+  - 3-email cold outreach sequence (French)
+  - LinkedIn warm follow-up template
+  - Voicemail script for phone outreach
+  - Country-specific sending times
+  - Localization by language (FR/EN)
+- ✅ **New West Africa Sources Added** (Feb 15, 2026)
+  - Afrikta (Ivory Coast, Senegal, Ghana, Nigeria)
+  - AllBusiness Africa (Pan-Africa SME)
+  - Africa Business Pages (Importers database)
+  - Afrobiz Africa (Black entrepreneurs)
+  - Africa Listings (B2B directory)
 
 ---
 
@@ -74,7 +86,7 @@
 |--------|--------|---------|--------|
 | Paying Subscribers | 100 | 0 | 🔴 |
 | Trial Signups | 500 | 0 | 🔴 |
-| Leads Scraped | 500 | **7** ✅ | 🟡 |
+| Leads Scraped | 500 | **113** ✅ (+106) | 🟡 |
 | Leads Contacted | 500 | 0 | 🔴 |
 | Influencer Posts | 10 | 0 | 🔴 |
 | LinkedIn Posts | 4/week | 2 | 🟡 |
@@ -87,22 +99,36 @@
 
 | Source | Country | Count | Format | Extracts |
 |--------|---------|-------|--------|----------|
-| AnnuaireCI.com | Côte d'Ivoire | 40,902 | Online directory | Phone, Email, Website, Socials |
+| AnnuaireCI.com | Côte d'Ivoire | 40,902 | Online directory | Phone, Email, Website |
+| afrikta.com | Multi-country | Unknown | Business directory | Name, Email |
+| allbusiness.africa | Pan-Africa | Unknown | SME directory | Name, Email, Industry |
+| africa-business.com | West Africa | Unknown | Importers database | Name, Email, Contact |
+| afrobiz.africa | Pan-Africa | Unknown | Black entrepreneurs | Name, Email |
+| africalistings.com | Pan-Africa | Unknown | B2B listings | Name, Email, Phone |
 | pme.gouv.ci (PDF) | Côte d'Ivoire | ~100+ | Official PME list | Name only |
-| senegal-export.com | Senegal | Unknown | Professional annuaire | Name, Email |
 
-## 📧 Contact Extraction
+## 📧 West African Email Sequences
 
-The enhanced scraper now extracts:
-- **Phones**: Ivory Coast (+225), Senegal (+221), generic formats
-- **Emails**: Regex pattern matching, mailto: links
-- **Socials**: Facebook, LinkedIn, Instagram, Twitter from profile pages
+**Location:** `memory/email-sequences.md`
 
-Run enhanced scraper:
-```bash
-cd /data/workspace/Companion-OS-v2
-node scripts/enhanced_scrape.cjs
-```
+### Sequences Created:
+1. **Cold Outreach** - 3 emails (Intro → Follow-up → Value Add)
+2. **Warm Outreach** - LinkedIn connection follow-up
+3. **Voicemail Script** - Phone call template
+
+### Best Sending Times:
+| Country | Best Days | Best Hours |
+|---------|-----------|------------|
+| Ivory Coast | Tue-Thu | 9-11h, 14-16h |
+| Senegal | Tue-Thu | 9-11h, 14-16h |
+| Ghana | Tue-Thu | 10-12h |
+| Nigeria | Tue-Thu | 10-12h |
+
+### Target Metrics:
+- Opens: 40%
+- Clicks: 10%
+- Replies: 5%
+- Demos booked: 20/month
 
 ---
 

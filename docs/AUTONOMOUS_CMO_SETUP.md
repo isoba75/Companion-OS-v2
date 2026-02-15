@@ -23,10 +23,8 @@ const EMAIL_CONFIG = {
 };
 ```
 
-### Step 4: Set Up Calendly (Free)
-1. Create free Calendly account: https://calendly.com
-2. Create a 15-min "Demo" event type
-3. Copy your link and replace in templates
+### Step 4: Add Your Name
+Replace `[VOTRE NOM]` with your actual name in templates.
 
 ---
 
@@ -43,14 +41,13 @@ node scripts/campaign-sender.cjs test
 node scripts/campaign-sender.cjs run 50 cold_1
 ```
 
-### Run Campaign (100 emails)
+### Follow-up Sequence
 ```bash
-node scripts/campaign-sender.cjs run 100 cold_1
-```
-
-### Next Email in Sequence
-```bash
+# Day 3: Second email
 node scripts/campaign-sender.cjs run 100 cold_2
+
+# Day 7: Third email
+node scripts/campaign-sender.cjs run 100 cold_3
 ```
 
 ### Qualify Leads
@@ -62,24 +59,30 @@ node scripts/campaign-sender.cjs qualify
 
 ## Gmail Limits
 - **Free Gmail:** 500 emails/day
-- **Google Workspace:** 2000 emails/day
 - **Personalized 1:1 emails** - No spam concerns!
 
 ---
 
-## Campaign Flow
+## Campaign Flow (Self-Serve Free Trial)
 
 ```
-Day 0: cold_1 (Intro)
+Day 0: cold_1 (Intro - free trial signup)
    ↓ (no reply)
-Day 3: cold_2 (Follow-up)
+Day 3: cold_2 (Follow-up - emphasize simplicity)
    ↓ (no reply)
-Day 7: cold_3 (Value add)
+Day 7: cold_3 (Value add - urgency)
    ↓ (no reply)
 Day 14: LinkedIn warm (if applicable)
-   ↓ (no reply)
-Day 21: Final + Remove from sequence
+Day 21: Final / Remove from sequence
 ```
+
+## Key Messaging
+- **NO DEMOS** - Not offered
+- **FREE TRIAL** - Self-serve, no human interaction needed
+- **EASY TO USE** - No training required
+- **MOBILE-FIRST** - Access from phone
+
+---
 
 ## Lead Status
 
@@ -87,11 +90,11 @@ Day 21: Final + Remove from sequence
 |--------|---------|--------|
 | new | Just scraped | Ready for campaign |
 | contacted | Email sent | Wait for reply |
-| replied | Lead responded | Escalate to you |
-| interested | Positive response | Book demo |
+| replied | Lead responded | 📢 Notify you |
+| interested | Positive response | 📢 Notify you - HOT LEAD |
 | trial | Started trial | Nurture |
-| paid | Converted | Celebrate! |
-| bounced | Email failed | Remove |
+| paid | Converted | 🎉 Celebrate! |
+| bounced | Failed | Remove |
 
 ---
 
@@ -99,13 +102,25 @@ Day 21: Final + Remove from sequence
 
 **The system detects:**
 - "Je suis intéressé" → status: interested
-- "Prix?" → status: interested  
-- "Calendly link" clicked → status: interested
-- Demo booked → status: trial
+- "Comment m'inscrire?" → status: interested
+- Trial started → status: trial
+- Paid conversion → status: paid
 
 **You get notified via Telegram when:**
-- Lead is "hot" (interested, demo requested)
-- Lead has pricing questions
+- Lead is "interested" or "replied"
+- Lead asks specific questions
 - Lead converts to paid
 
 Everything else I handle autonomously! 🎯
+
+---
+
+## Quick Stats to Track
+
+| Metric | Target |
+|---------|--------|
+| Emails sent | 500/day |
+| Opens | 40% |
+| Replies | 5% |
+| Trial signups | 20% of replies |
+| Paid conversions | 30% of trials |

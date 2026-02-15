@@ -309,6 +309,12 @@ node scripts/campaign-sender.cjs qualify
 | 14 | LinkedIn warm | linkedin_warm |
 | 21 | Final / Remove | - |
 
+### Key Messaging
+- **NO DEMOS** - Not offered
+- **FREE TRIAL** - Self-serve, no human needed
+- **EASY TO USE** - No training required
+- **MOBILE-FIRST** - Access from phone
+
 ### Lead Qualification
 
 | Status | Meaning | Action |

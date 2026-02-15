@@ -32,19 +32,29 @@ const TEMPLATES = {
 
 Je suis [VOTRE NOM] de Digibuntu - une solution ERP conçue spécifiquement pour les PME africaines.
 
-J'ai vu que vous travaillez chez ${lead.company} et je pense que notre logiciel pourrait vous aider à:
+Chez ${lead.company || 'votre entreprise'}, vous devez gérer:
+✓ La comptabilité
+✓ Les stocks et ventes
+✓ Les clients et factures
 
-✓ Gagner 10h/semaine sur la gestion administrative
-✓ Réduire les erreurs de comptabilité de 50%
-✓ Suivre votre entreprise en temps réel, depuis votre téléphone
+Digibuntu fait tout ça en UN SEUL logiciel simple.
 
-Nous aidons déjà +50 PME en Côte d'Ivoire et au Sénégal.
+**Pourquoi les PME nous choisissent:**
+- 100% auto-formation (pas de formation nécessaire!)
+- Accessible depuis votre téléphone
+- Support en français
+- Essai gratuit immédiat
 
-Je serais ravi de vous montrer une démo gratuite de 15 minutes - calendrier ici: https://calendly.com/your-link/demo
+**Essayez gratuitement:** https://digibuntu.com/#/signup
 
-Quand seriez-vous disponible cette semaine?
+C'est gratuit, sans engagement, et vous pouvez commencer maintenant.
 
-${EMAIL_CONFIG.signature}`
+Cordialement,
+[VOTRE NOM]
+Équipe Digibuntu
+--
+Digibuntu - La gestion d'entreprise simplifiée
+https://digibuntu.com`
   },
 
   cold_2: {
@@ -53,51 +63,62 @@ ${EMAIL_CONFIG.signature}`
 
 Je me permets de vous relancer suite à mon dernier message.
 
-J'imagine que vous êtes très occupé - c'est exactement pourquoi Digibuntu existe: pour vous faire gagner du temps!
+Avec Digibuntu, vos équipes peuvent:
+- Gérer la comptabilité sans expertise
+- Suivre les stocks en temps réel
+- Générer des factures professionnelles
 
-En résumé, nous aidons les PME comme ${lead.company} à:
-- Automatiser la comptabilité
-- Suivre les ventes et stocks en temps réel
-- Prendre de meilleures décisions avec des rapports simples
+Tout ça sans formation - le logiciel est conçu pour être utilisé seul.
 
-Prenez 2 minutes pour réserver votre démo gratuite: https://calendly.com/your-link/demo
+**Essayez gratuitement:** https://digibuntu.com/#/signup
 
-À très bientôt,
-${EMAIL_CONFIG.signature}`
+Rien à installer, pas de carte bancaire, pas d'engagement.
+
+À bientôt,
+[VOTRE NOM]
+Équipe Digibuntu
+https://digibuntu.com`
   },
 
   cold_3: {
-    subject: `${lead => lead.company ? `${lead.company} et l'avenir de la gestion d'entreprise` : 'Une idée pour votre entreprise'}`,
+    subject: `${lead => lead.company ? `${lead.company} - gestion simplifiée` : 'Une idée pour votre entreprise'}`,
     template: (lead) => `Bonjour ${lead.firstName || 'Madame, Monsieur'},
 
-Je partage avec vous une réflexion qui pourrait vous interesser:
+Les PME africaines qui utilisent Digibuntu économisent:
+- 10h/semaine sur la gestion administrative
+- Des milliers CFA en erreurs de suivi
+- Du stress avec la comptabilité
 
-Les PME africaines qui adoptent un ERP comme Digibuntu réduisent leur temps de paperwork de 60% en moyenne.
+Et tout ça sans formation - le logiciel s'utilise seul.
 
-Chez ${lead.company || 'votre entreprise'}, cela pourrait signifier:
-- ${lead.phone ? '+' : ''}${lead.phone ? '1 jour/semaine récupéré pour la stratégie' : '10h/semaine pour ce qui compte vraiment'}
-- ${lead.email ? '+' : ''}${lead.email ? 'Zéro erreur de stock' : 'Meilleure visibilité sur les finances'}
+**Démarrez gratuitement:** https://digibuntu.com/#/signup
 
-Je ne veux pas vous déranger davantage. Voici mon calendrier pour une démo de 10min: https://calendly.com/your-link/demo
+C'est vraiment simple - vos équipes peuvent commencer aujourd'hui.
 
 À bientôt,
-${EMAIL_CONFIG.signature}`
+[VOTRE NOM]
+Équipe Digibuntu
+https://digibuntu.com`
   },
 
   linkedin_warm: {
     subject: 'Ravi de vous connecter sur LinkedIn',
-    template: (lead) => `Bonjour ${lead.firstName || lead.company.split(' ')[0]},
+    template: (lead) => `Bonjour ${lead.firstName || lead.company?.split(' ')[0]},
 
-Merci d'avoir accepté ma demande de connexion sur LinkedIn!
+Merci d'avoir accepté ma demande de connexion!
 
 Chez Digibuntu, nous aidons les PME africaines à digitaliser leur gestion - et je vois que ${lead.company || 'votre entreprise'} évolue dans ${lead.industry || 'un secteur'} qui nous interesse beaucoup.
 
-Avez-vous des défis particuliers dans la gestion quotidienne de votre entreprise? Je serais curieux d'échanger.
+Notre promesse: un ERP que vos équipes utilisent seules, sans formation.
 
-En attendant, n'hésitez pas à consulter notre site: https://digibuntu.com
+**Essayez gratuitement:** https://digibuntu.com/#/signup
+
+N'hésitez pas si vous avez des questions!
 
 Bien cordialement,
-${EMAIL_CONFIG.signature}`
+[VOTRE NOM]
+Équipe Digibuntu
+https://digibuntu.com`
   }
 };
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, GitCommit, Users, DollarSign, CheckCircle, Clock } from 'lucide-react';
+import { Activity, GitCommit, Users, DollarSign, CheckCircle, Clock, Target } from 'lucide-react';
 
 const activities = [
   { id: 1, type: 'lead', message: '7 new leads scraped from AnnuaireCI', time: '2 hours ago', icon: Users, color: 'text-blue-400' },

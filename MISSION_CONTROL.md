@@ -36,7 +36,7 @@
 ### 🟢 DOING
 > Active work right now
 
-- **Today:** Building Mission Control, searching for directories
+- Testing Mission Control dashboard
 
 ### 🔵 DONE
 > Completed items
@@ -48,7 +48,9 @@
 - ✅ Daily/weekly briefing framework designed
 - ✅ Companion-OS-v2 repository created
 - ✅ 40,902 Ivory Coast businesses found on AnnuaireCI.com
-- ✅ **Mission Control Dashboard DEPLOYED** - https://companion-os-v2.vercel.app ✅
+- ✅ **Mission Control Dashboard DEPLOYED & TESTED** - https://companion-os-v2.vercel.app ✅
+- ✅ Fixed Dashboard metrics loading bug (result.data → metricsResult.data)
+- ✅ Fixed KanbanBoard theme prop issue
 
 ---
 

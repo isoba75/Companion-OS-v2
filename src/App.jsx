@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard, Users, DollarSign, Kanban, Settings,
-  RefreshCw, Sun, Moon, Menu, X, Zap, Bell
+  RefreshCw, Sun, Moon, Menu, X, Zap, Bell, Loader2
 } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import KanbanBoard from './components/KanbanBoard';
 import LeadsTable from './components/LeadsTable';
 import FinancePanel from './components/FinancePanel';
+import { getTasks, createTask, updateTaskStatus, deleteTask } from './utils/firebase';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -16,38 +17,80 @@ const navItems = [
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
-const sampleTasks = {
+const defaultTasks = {
   backlog: [
-    { id: 1, title: 'Set up Stripe API keys', tag: 'Finance', priority: 'high' },
-    { id: 2, title: 'Create French landing page', tag: 'Marketing', priority: 'medium' },
-    { id: 3, title: 'Implement referral program', tag: 'Product', priority: 'low' },
+    { id: 't1', title: 'Set up Stripe API keys', tag: 'Finance', priority: 'high' },
+    { id: 't2', title: 'Create French landing page', tag: 'Marketing', priority: 'medium' },
+    { id: 't3', title: 'Implement referral program', tag: 'Product', priority: 'low' },
   ],
   thisWeek: [
-    { id: 5, title: 'Scrape 500+ SME contacts', tag: 'Lead Gen', priority: 'high' },
-    { id: 6, title: 'Create influencer pitch deck', tag: 'Marketing', priority: 'high' },
+    { id: 't5', title: 'Scrape 500+ SME contacts', tag: 'Lead Gen', priority: 'high' },
+    { id: 't6', title: 'Create influencer pitch deck', tag: 'Marketing', priority: 'high' },
   ],
   doing: [
-    { id: 8, title: 'Build Mission Control UI', tag: 'Dev', priority: 'high' },
+    { id: 't8', title: 'Build Mission Control UI', tag: 'Dev', priority: 'high' },
   ],
   done: [
-    { id: 9, title: 'Configure MiniMax M2.1', tag: 'Dev', priority: 'medium' },
-    { id: 10, title: 'Deploy to Vercel', tag: 'Dev', priority: 'medium' },
+    { id: 't9', title: 'Configure MiniMax M2.1', tag: 'Dev', priority: 'medium' },
+    { id: 't10', title: 'Deploy to Vercel', tag: 'Dev', priority: 'medium' },
   ],
 };
 
 function App() {
   const [activeView, setActiveView] = useState('dashboard');
-  const [tasks, setTasks] = useState(sampleTasks);
+  const [tasks, setTasks] = useState(defaultTasks);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [theme, setTheme] = useState('light');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState(3);
+  const [isLoadingTasks, setIsLoadingTasks] = useState(false);
 
+  // Load tasks from Firestore on mount
+  useEffect(() => {
+    loadTasks();
+  }, []);
+
+  // Theme initialization
   useEffect(() => {
     const savedTheme = localStorage.getItem('companion-theme') || 'light';
     setTheme(savedTheme);
     document.documentElement.classList.toggle('dark', savedTheme === 'dark');
   }, []);
+
+  const loadTasks = async () => {
+    setIsLoadingTasks(true);
+    const result = await getTasks();
+    if (result.success && result.data) {
+      setTasks(result.data);
+      setLastUpdated(new Date());
+    }
+    setIsLoadingTasks(false);
+  };
+
+  const handleCreateTask = async (taskData) => {
+    const result = await createTask(taskData);
+    if (result.success) {
+      // Refresh tasks
+      loadTasks();
+    }
+  };
+
+  const handleMoveTask = async (taskId, newStatus) => {
+    await updateTaskStatus(taskId, newStatus);
+    // Update local state
+    setTasks(prev => {
+      const newTasks = { ...prev };
+      Object.keys(newTasks).forEach(status => {
+        newTasks[status] = newTasks[status].filter(t => t.id !== taskId);
+      });
+      return newTasks;
+    });
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    await deleteTask(taskId);
+    loadTasks();
+  };
 
   // Auto-update timestamp every minute
   useEffect(() => {
@@ -72,7 +115,16 @@ function App() {
   const renderView = () => {
     switch (activeView) {
       case 'dashboard': return <Dashboard tasks={tasks} theme={theme} />;
-      case 'kanban': return <KanbanBoard tasks={tasks} setTasks={setTasks} theme={theme} />;
+      case 'kanban': return (
+        <KanbanBoard 
+          tasks={tasks} 
+          theme={theme} 
+          onMoveTask={handleMoveTask}
+          onDeleteTask={handleDeleteTask}
+          onAddTask={handleCreateTask}
+          isLoading={isLoadingTasks}
+        />
+      );
       case 'leads': return <LeadsTable theme={theme} />;
       case 'finance': return <FinancePanel theme={theme} />;
       case 'settings': return <SettingsPanel theme={theme} toggleTheme={toggleTheme} />;

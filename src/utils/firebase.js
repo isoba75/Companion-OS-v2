@@ -132,4 +132,64 @@ export async function updateMetric(metricId, value) {
   }
 }
 
+// Task operations
+export async function getTasks() {
+  try {
+    const snapshot = await getDocs(collection(db, COLLECTIONS.TASKS));
+    const tasks = {
+      backlog: [],
+      thisWeek: [],
+      doing: [],
+      done: []
+    };
+    snapshot.docs.forEach(doc => {
+      const task = { id: doc.id, ...doc.data() };
+      if (tasks[task.status]) {
+        tasks[task.status].push(task);
+      }
+    });
+    return { success: true, data: tasks };
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    return { success: false, error: error.message, data: null };
+  }
+}
+
+export async function createTask(taskData) {
+  try {
+    const docRef = await addDoc(collection(db, COLLECTIONS.TASKS), {
+      ...taskData,
+      createdAt: new Date().toISOString()
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error('Error creating task:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function updateTaskStatus(taskId, newStatus) {
+  try {
+    const taskRef = doc(db, COLLECTIONS.TASKS, taskId);
+    await updateDoc(taskRef, {
+      status: newStatus,
+      updatedAt: new Date().toISOString()
+    });
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating task:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteTask(taskId) {
+  try {
+    await deleteDoc(doc(db, COLLECTIONS.TASKS, taskId));
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting task:', error);
+    return { success: false, error: error.message };
+  }
+}
+
 export { db, app };

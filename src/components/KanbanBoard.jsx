@@ -116,7 +116,7 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
         [columnId]: [
           ...(prev[columnId] || []),
           {
-            id: \`ASST-\${String(Date.now()).slice(-3)}\`,
+            id: `ASST-$String(Date.now()).slice(-3)}`,
             title: newTaskTitle,
             status: columnId,
             priority: 'medium',
@@ -179,13 +179,13 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
             )}
           </h2>
           <p className={`text-sm ${theme === 'light' ? 'text-slate-400' : 'text-slate-400'}`}>
-            {isLoading ? 'Loading...' : \`\${activeCount} tasks • \${doingCount} in progress • \${doneCount} completed\`}
+            {isLoading ? 'Loading...' : `$activeCount} tasks • $doingCount} in progress • $doneCount} completed`}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={toggleView}
-            className={\`px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 transition-colors \${theme === 'light' ? 'bg-slate-100 hover:bg-slate-200' : 'bg-slate-700 hover:bg-slate-600'}\`}
+            className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 transition-colors $theme === 'light' ? 'bg-slate-100 hover:bg-slate-200' : 'bg-slate-700 hover:bg-slate-600'}`}
           >
             {viewMode === 'user' && <><User className="w-4 h-4" /> Yours</>}
             {viewMode === 'assistant' && <><Bot className="w-4 h-4" /> Mine</>}
@@ -201,7 +201,7 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
           return (
             <div 
               key={columnId}
-              className={\`kanban-column rounded-xl p-4 \${theme === 'light' ? 'bg-slate-100' : 'bg-slate-800'}\`}
+              className={`kanban-column rounded-xl p-4 $theme === 'light' ? 'bg-slate-100' : 'bg-slate-800'}`}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
                 e.preventDefault();
@@ -210,11 +210,11 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
                 handleDrop(tId, from, columnId);
               }}
             >
-              <div className={\`flex items-center justify-between mb-4 pb-3 border-b \${config.color.replace('bg-', 'border-').split(' ')[0]} \${theme === 'light' ? 'border-slate-200' : 'border-slate-700'}\`}>
+              <div className={`flex items-center justify-between mb-4 pb-3 border-b $config.color.replace('bg-', 'border-').split(' ')[0]} $theme === 'light' ? 'border-slate-200' : 'border-slate-700'}`}>
                 <div className="flex items-center gap-2">
-                  <div className={\`w-3 h-3 rounded-full \${config.color.split(' ')[2]}\`} />
+                  <div className={`w-3 h-3 rounded-full $config.color.split(' ')[2]}`} />
                   <h3 className="font-semibold">{config.title}</h3>
-                  <span className={\`text-xs px-2 py-0.5 rounded-full \${config.color}\`}>{columnTasks.length}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full $config.color}`}>{columnTasks.length}</span>
                 </div>
                 <button 
                   onClick={() => setAddingToColumn(columnId)}

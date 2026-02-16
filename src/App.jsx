@@ -44,6 +44,7 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState(3);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
+  const [taskViewMode, setTaskViewMode] = useState('user'); // 'user' | 'assistant' | 'all'
 
   // Load tasks from Firestore on mount
   useEffect(() => {
@@ -114,7 +115,7 @@ function App() {
 
   const renderView = () => {
     switch (activeView) {
-      case 'dashboard': return <Dashboard tasks={tasks} theme={theme} />;
+      case 'dashboard': return <Dashboard tasks={tasks} theme={theme} taskViewMode={taskViewMode} />;
       case 'kanban': return (
         <KanbanBoard 
           tasks={tasks} 
@@ -123,6 +124,8 @@ function App() {
           onDeleteTask={handleDeleteTask}
           onAddTask={handleCreateTask}
           isLoading={isLoadingTasks}
+          viewMode={taskViewMode}
+          setViewMode={setTaskViewMode}
         />
       );
       case 'leads': return <LeadsTable theme={theme} />;

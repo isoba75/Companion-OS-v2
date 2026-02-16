@@ -116,7 +116,7 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
         [columnId]: [
           ...(prev[columnId] || []),
           {
-            id: `ASST-$String(Date.now()).slice(-3)}`,
+            id: `ASST-${String(Date.now()).slice(-3)}`,
             title: newTaskTitle,
             status: columnId,
             priority: 'medium',

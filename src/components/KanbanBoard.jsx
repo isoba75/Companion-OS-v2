@@ -18,17 +18,18 @@ const priorityColors = {
 // Sample assistant tasks (loaded from file in real app)
 const defaultAssistantTasks = {
   backlog: [
-    { id: 'ASST-001', title: 'Review Second Brain captures', tag: 'Processing', priority: 'medium', source: 'assistant' },
-    { id: 'ASST-002', title: 'Draft weekly summary', tag: 'Reporting', priority: 'low', source: 'assistant' },
+    { id: 'ASST-002', title: 'Create quick-fill form for mission reports', tag: 'Writing', priority: 'medium', source: 'assistant' },
+    { id: 'ASST-003', title: 'Set up reminder for 14-day deadline', tag: 'Automation', priority: 'medium', source: 'assistant' },
   ],
   thisWeek: [
-    { id: 'ASST-003', title: 'Process UN mission notes', tag: 'Writing', priority: 'high', source: 'assistant' },
+    { id: 'ASST-004', title: 'Draft sample mission report', tag: 'Writing', priority: 'high', source: 'assistant' },
   ],
   doing: [
-    { id: 'ASST-000', title: 'Organize second brain files', tag: 'Organizing', priority: 'medium', source: 'assistant' },
+    { id: 'ASST-001', title: 'Process UNESCO mission report template', tag: 'Processing', priority: 'high', source: 'assistant', progress: '10%' },
   ],
   done: [
-    { id: 'ASST-999', title: 'Update SOUL.md persona', tag: 'Organizing', priority: 'high', source: 'assistant', completed: '2026-02-16' },
+    { id: 'ASST-000', title: 'Update SOUL.md persona', tag: 'Organizing', priority: 'high', source: 'assistant', completed: 'Today' },
+    { id: 'ASST-000', title: 'Update USER.md: UNESCO Iraq', tag: 'Organizing', priority: 'high', source: 'assistant', completed: 'Today' },
   ]
 };
 

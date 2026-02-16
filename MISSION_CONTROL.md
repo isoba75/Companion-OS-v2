@@ -353,28 +353,33 @@ node scripts/campaign-sender.cjs qualify
 
 ## 🔄 Lead Sync Status
 
-| Source | Scraped | Uploaded | Notes |
-|--------|---------|----------|-------|
-| AnnuaireCI.com | 7 | ✅ | Phones + websites |
-| Afrikta (CI,SN,GH,NG) | 46 | ✅ | Names + emails |
-| AllBusiness Africa | 0 | ✅ | - |
-| Africa Business Pages | 46 | ✅ | Names + emails |
-| Afrobiz Africa | 50 | ✅ | Names + emails |
-| **TOTAL** | **124** | **✅ FIRESTORE** | View in Leads tab |
+| Source | Scraped | In Firestore | Notes |
+|--------|---------|--------------|-------|
+| AnnuaireCI.com | 7 | ✅ 7 | Phones + websites |
+| Africa Business Pages | 46 | ✅ 46 | Names + emails |
+| Afrobiz Africa | 50 | ✅ 50 | Names + emails |
+| Afrikta | 21 | ✅ 21 | Names |
+| **TOTAL** | **124** | **113** | ✅ All synced |
+
+**Last sync:** Just now
+**Auto-sync command:** `node scripts/sync-leads.cjs`
 
 ## 🛠️ Daily Commands
 
 ```bash
-# Scrape new leads
 cd /data/workspace/Companion-OS-v2
+
+# 1. Scrape new leads
 node scripts/westafrica_scrape.cjs
 
-# Sync to Firestore
-node scripts/import-leads.cjs
+# 2. Sync to Firestore (ALWAYS RUN AFTER SCRAPING!)
+node scripts/sync-leads.cjs
 
-# Deploy to Vercel
+# 3. Deploy to Vercel (auto-syncs to Mission Control)
 git add -A && git commit -m "Update" && git push
 ```
+
+**⚠️ IMPORTANT:** Always run `sync-leads.cjs` after scraping to update Mission Control!
 
 ---
 

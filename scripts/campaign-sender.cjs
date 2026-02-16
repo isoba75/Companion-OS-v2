@@ -8,20 +8,18 @@ const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
 
-// CONFIG - Fill in your Gmail credentials
+// CONFIG - Uses environment variables (more secure)
 const EMAIL_CONFIG = {
-  user: 'your-email@gmail.com',       // YOUR GMAIL
-  pass: 'your-app-password',          // GMAIL APP PASSWORD
-  from: 'Your Name <your-email@gmail.com>',
-  signature: `
+  user: process.env.GMAIL_USER || 'your-email@gmail.com',
+  pass: process.env.GMAIL_APP_PASSWORD || 'your-app-password',
+  from: process.env.GMAIL_FROM || 'Your Name <your-email@gmail.com>',
+  signature: process.env.GMAIL_SIGNATURE || `
 Cordialement,
 Votre Nom
 Équipe Digibuntu
 --
 Digibuntu - La gestion d'entreprise simplifiée pour les PME africaines
-WhatsApp: https://wa.me/your-number
-Calendly: https://calendly.com/your-link
-`
+https://digibuntu.com`
 };
 
 // Email templates

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Plus, GripVertical, Trash2, Loader2, User, Bot } from 'lucide-react';
-import { getTasks, createTask as firebaseCreateTask, updateTaskStatus as firebaseUpdateStatus, deleteTask as firebaseDeleteTask } from '../utils/firebase';
 
 const columnConfig = {
   backlog: { title: 'Backlog', color: 'border-red-500/50 bg-red-500/10 text-red-400' },
@@ -15,7 +14,6 @@ const priorityColors = {
   low: 'bg-slate-500/20 text-slate-400 border-slate-500/30'
 };
 
-// Sample assistant tasks (loaded from file in real app)
 const defaultAssistantTasks = {
   backlog: [
     { id: 'ASST-002', title: 'Create quick-fill form for mission reports', tag: 'Writing', priority: 'medium', source: 'assistant' },
@@ -77,11 +75,10 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
   const [movingTaskId, setMovingTaskId] = useState(null);
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [addingToColumn, setAddingToColumn] = useState(null);
-  const [assistantTasks, setAssistantTasks] = useState(defaultAssistantTasks);
+  const [assistantTasks] = useState(defaultAssistantTasks);
 
   const displayTasks = viewMode === 'assistant' ? assistantTasks : tasks;
 
-  // Toggle handler
   const toggleView = () => {
     const modes = ['user', 'assistant', 'all'];
     const currentIdx = modes.indexOf(viewMode);
@@ -93,7 +90,6 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
     if (!taskId || fromColumn === toColumn) return;
     setMovingTaskId(taskId);
     if (viewMode === 'assistant') {
-      // Update local assistant tasks
       setAssistantTasks(prev => {
         const newTasks = { ...prev };
         Object.keys(newTasks).forEach(status => {
@@ -115,13 +111,12 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
   const handleAddTask = async (columnId) => {
     if (!newTaskTitle.trim()) return;
     if (viewMode === 'assistant') {
-      // Add to assistant tasks locally
       setAssistantTasks(prev => ({
         ...prev,
         [columnId]: [
           ...(prev[columnId] || []),
           {
-            id: `ASST-${String(Date.now()).slice(-3)}`,
+            id: \`ASST-\${String(Date.now()).slice(-3)}\`,
             title: newTaskTitle,
             status: columnId,
             priority: 'medium',
@@ -168,7 +163,7 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
             {viewMode === 'assistant' ? (
               <>
                 <Bot className="w-6 h-6 text-primary-400" />
-                🧠 My Tasks
+                My Tasks
               </>
             ) : viewMode === 'all' ? (
               <>
@@ -184,16 +179,13 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
             )}
           </h2>
           <p className={`text-sm ${theme === 'light' ? 'text-slate-400' : 'text-slate-400'}`}>
-            {isLoading ? 'Loading...' : `${activeCount} tasks • ${doingCount} in progress • ${doneCount} completed`}
+            {isLoading ? 'Loading...' : \`\${activeCount} tasks • \${doingCount} in progress • \${doneCount} completed\`}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {/* View Toggle */}
           <button
             onClick={toggleView}
-            className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 transition-colors ${
-              theme === 'light' ? 'bg-slate-100 hover:bg-slate-200' : 'bg-slate-700 hover:bg-slate-600'
-            }`}
+            className={\`px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 transition-colors \${theme === 'light' ? 'bg-slate-100 hover:bg-slate-200' : 'bg-slate-700 hover:bg-slate-600'}\`}
           >
             {viewMode === 'user' && <><User className="w-4 h-4" /> Yours</>}
             {viewMode === 'assistant' && <><Bot className="w-4 h-4" /> Mine</>}
@@ -209,7 +201,7 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
           return (
             <div 
               key={columnId}
-              className={`kanban-column rounded-xl p-4 ${theme === 'light' ? 'bg-slate-100' : 'bg-slate-800'}`}
+              className={\`kanban-column rounded-xl p-4 \${theme === 'light' ? 'bg-slate-100' : 'bg-slate-800'}\`}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
                 e.preventDefault();
@@ -218,11 +210,11 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
                 handleDrop(tId, from, columnId);
               }}
             >
-              <div className={`flex items-center justify-between mb-4 pb-3 border-b ${config.color.replace('bg-', 'border-').split(' ')[0]} ${theme === 'light' ? 'border-slate-200' : 'border-slate-700'}`}>
+              <div className={\`flex items-center justify-between mb-4 pb-3 border-b \${config.color.replace('bg-', 'border-').split(' ')[0]} \${theme === 'light' ? 'border-slate-200' : 'border-slate-700'}\`}>
                 <div className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full ${config.color.split(' ')[2]}`} />
+                  <div className={\`w-3 h-3 rounded-full \${config.color.split(' ')[2]}\`} />
                   <h3 className="font-semibold">{config.title}</h3>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${config.color}`}>{columnTasks.length}</span>
+                  <span className={\`text-xs px-2 py-0.5 rounded-full \${config.color}\`}>{columnTasks.length}</span>
                 </div>
                 <button 
                   onClick={() => setAddingToColumn(columnId)}
@@ -231,8 +223,6 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
                   <Plus className="w-4 h-4 text-slate-400" />
                 </button>
               </div>
-              
-              {/* Add Task Input */}
               {addingToColumn === columnId && (
                 <div className="mb-3 p-2 rounded-lg bg-slate-700/50">
                   <input
@@ -260,7 +250,6 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
                   </div>
                 </div>
               )}
-              
               <div className="space-y-3">
                 {columnTasks.map(task => (
                   <TaskCard 
@@ -272,65 +261,6 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
                     onDelete={handleDeleteTask}
                     isMoving={movingTaskId === task.id}
                     showSource={viewMode === 'all'}
-                  />
-                ))}
-                {columnTasks.length === 0 && (
-                  <div className="text-center py-8 text-slate-500 text-sm">No tasks</div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-export default KanbanBoard;="p-1 hover:bg-slate-600/50 rounded transition-colors"
-                >
-                  <Plus className="w-4 h-4 text-slate-400" />
-                </button>
-              </div>
-              
-              {/* Add Task Input */}
-              {addingToColumn === columnId && (
-                <div className="mb-3 p-2 rounded-lg bg-slate-700/50">
-                  <input
-                    type="text"
-                    value={newTaskTitle}
-                    onChange={(e) => setNewTaskTitle(e.target.value)}
-                    placeholder="Task title..."
-                    className="w-full bg-transparent text-sm text-white placeholder-slate-400 outline-none"
-                    autoFocus
-                    onKeyPress={(e) => e.key === 'Enter' && handleAddTask(columnId)}
-                  />
-                  <div className="flex gap-2 mt-2">
-                    <button 
-                      onClick={() => handleAddTask(columnId)}
-                      className="text-xs px-2 py-1 bg-primary-500/20 text-primary-400 rounded"
-                    >
-                      Add
-                    </button>
-                    <button 
-                      onClick={() => setAddingToColumn(null)}
-                      className="text-xs px-2 py-1 text-slate-400"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
-              
-              <div className="space-y-3">
-                {columnTasks.map(task => (
-                  <TaskCard 
-                    key={task.id} 
-                    task={task} 
-                    columnId={columnId} 
-                    theme={theme}
-                    onMove={onMoveTask}
-                    onDelete={onDeleteTask}
-                    isMoving={movingTaskId === task.id}
                   />
                 ))}
                 {columnTasks.length === 0 && (

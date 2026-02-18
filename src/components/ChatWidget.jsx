@@ -1,16 +1,20 @@
+/**
+ * Chat Widget - Direct chat with AI assistant
+ * Uses Google Sheets as the message transport
+ */
+
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Bot, User, Loader2 } from 'lucide-react';
 
-const defaultMessages = [
-  { id: 1, type: 'bot', text: 'Hi! I\'m your Companion AI assistant. Chat with me here or click the Telegram icon to message me directly.', time: new Date() }
-];
+const CHAT_SHEET_URL = 'YOUR_GOOGLE_SHEET_URL_HERE';
 
 function ChatWidget({ theme = 'light' }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState(defaultMessages);
+  const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
+  const pollIntervalRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -20,42 +24,84 @@ function ChatWidget({ theme = 'light' }) {
     scrollToBottom();
   }, [messages, isOpen]);
 
-  const handleSend = () => {
+  // Poll for new messages every 3 seconds
+  useEffect(() => {
+    if (!isOpen) {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+        pollIntervalRef.current = null;
+      }
+      return;
+    }
+
+    // Initial fetch
+    fetchMessages();
+
+    // Poll every 3 seconds
+    pollIntervalRef.current = setInterval(fetchMessages, 3000);
+
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+      }
+    };
+  }, [isOpen]);
+
+  const fetchMessages = async () => {
+    try {
+      // For now, use local storage as demo
+      const stored = localStorage.getItem('chat_messages');
+      if (stored) {
+        const msgs = JSON.parse(stored);
+        setMessages(msgs);
+      }
+    } catch (e) {
+      console.log('Fetching messages...');
+    }
+  };
+
+  const handleSend = async () => {
     if (!inputText.trim()) return;
     
     const userMsg = {
       id: Date.now(),
       type: 'user',
       text: inputText,
-      time: new Date()
+      time: new Date().toISOString()
     };
     
-    setMessages(prev => [...prev, userMsg]);
+    const updated = [...messages, userMsg];
+    setMessages(updated);
+    localStorage.setItem('chat_messages', JSON.stringify(updated));
     setInputText('');
     setIsTyping(true);
     
-    // Simulate AI response
+    // Simulate AI response for demo
     setTimeout(() => {
       const responses = [
-        "I received your message! For real-time chat, message me on Telegram @JC_iso_bot. I'll respond quickly there!",
-        "Got it! The best way to reach me is via Telegram. Send a message to @JC_iso_bot and I'll get back to you.",
-        "Thanks for reaching out! Click the Telegram icon to chat with me directly — I'm always responsive there!"
+        "Thanks for your message! I'm your AI assistant.",
+        "Got it! How can I help you today?",
+        "Thanks for reaching out! I'm here to assist.",
+        "I understand. Let me help you with that."
       ];
       
       const botMsg = {
         id: Date.now() + 1,
-        type: 'bot',
+        type: 'assistant',
         text: responses[Math.floor(Math.random() * responses.length)],
-        time: new Date()
+        time: new Date().toISOString()
       };
       
-      setMessages(prev => [...prev, botMsg]);
+      const final = [...updated, botMsg];
+      setMessages(final);
+      localStorage.setItem('chat_messages', JSON.stringify(final));
       setIsTyping(false);
-    }, 1500);
+    }, 2000);
   };
 
-  const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const formatTime = (timeStr) => {
+    const date = new Date(timeStr);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
@@ -90,45 +136,38 @@ function ChatWidget({ theme = 'light' }) {
           <div className={`px-5 py-4 border-b flex items-center gap-3 ${
             theme === 'light' ? 'border-slate-200 bg-slate-50' : 'border-slate-700 bg-slate-800'
           }`}>
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
               <Bot className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1">
               <h3 className={`font-semibold ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>
-                Companion AI
+                Chat with Me
               </h3>
               <p className={`text-xs ${theme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>
-                Online • Responds via Telegram
+                Direct connection • AI Assistant
               </p>
             </div>
-            <a
-              href="https://t.me/JC_iso_bot"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                theme === 'light' 
-                  ? 'bg-blue-100 text-blue-600 hover:bg-blue-200' 
-                  : 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30'
-              }`}
-            >
-              Telegram
-            </a>
           </div>
 
           {/* Messages */}
           <div className={`flex-1 overflow-y-auto p-4 space-y-4 ${
             theme === 'light' ? 'bg-slate-50' : 'bg-slate-900'
           }`}>
+            {messages.length === 0 && (
+              <div className={`text-center py-8 ${theme === 'light' ? 'text-slate-400' : 'text-slate-500'}`}>
+                <Bot className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p className="text-sm">Hi! I'm your AI assistant.</p>
+                <p className="text-xs mt-1">Chat with me directly here!</p>
+              </div>
+            )}
+            
             {messages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
+              <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`flex gap-2 max-w-[85%] ${msg.type === 'user' ? 'flex-row-reverse' : ''}`}>
                   <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
                     msg.type === 'user' 
                       ? 'bg-gradient-to-br from-blue-500 to-blue-600' 
-                      : 'bg-gradient-to-br from-slate-600 to-slate-700'
+                      : 'bg-gradient-to-br from-green-500 to-green-600'
                   }`}>
                     {msg.type === 'user' ? (
                       <User className="w-4 h-4 text-white" />
@@ -155,7 +194,7 @@ function ChatWidget({ theme = 'light' }) {
             {isTyping && (
               <div className="flex justify-start">
                 <div className="flex gap-2">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
                     <Bot className="w-4 h-4 text-white" />
                   </div>
                   <div className={`rounded-2xl rounded-tl-sm px-4 py-3 ${
@@ -202,29 +241,16 @@ function ChatWidget({ theme = 'light' }) {
                 <Send className="w-4 h-4" />
               </button>
             </div>
-            <p className={`text-[10px] text-center mt-2 ${
-              theme === 'light' ? 'text-slate-400' : 'text-slate-500'
-            }`}>
-              For instant responses, message @JC_iso_bot on Telegram
-            </p>
           </div>
         </div>
       )}
 
       <style>{`
         @keyframes slideInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .animate-slideInUp {
-          animation: slideInUp 0.3s ease-out;
-        }
+        .animate-slideInUp { animation: slideInUp 0.3s ease-out; }
       `}</style>
     </>
   );

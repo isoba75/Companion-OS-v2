@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import KanbanBoard from './components/KanbanBoard';
+import SecondBrain from './components/SecondBrain';
 import { getTasks, createTask, updateTaskStatus, deleteTask, subscribeToTasks } from './utils/firebase';
 
 const navItems = [
@@ -31,38 +32,6 @@ function App() {
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
 
   useEffect(() => {
-    // Real-time task sync
-    const unsubscribe = subscribeToTasks((result) => {
-      if (result.success && result.data) {
-        setTasks(result.data);
-        setLastUpdated(new Date());
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('companion-theme') || 'light';
-    setTheme(savedTheme);
-    document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-  }, []);
-
-  const handleCreateTask = async (taskData) => {
-    await createTask(taskData);
-  };
-
-  const handleMoveTask = async (taskId, newStatus) => {
-    await updateTaskStatus(taskId, newStatus);
-  };
-
-  const handleDeleteTask = async (taskId) => {
-    await deleteTask(taskId);
-  };
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLastUpdated(new Date());
-    }, 30000); // Update timestamp display
     return () => clearInterval(interval);
   }, []);
 

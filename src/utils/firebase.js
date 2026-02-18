@@ -25,8 +25,43 @@ export const COLLECTIONS = {
   LEADS: 'leads',
   TASKS: 'tasks',
   METRICS: 'metrics',
-  DECISIONS: 'decisions'
+  DECISIONS: 'decisions',
+  DAILY_SUMMARIES: 'daily_summaries'
 };
+
+// Daily Summary Operations
+export async function addDailySummary(summary) {
+  try {
+    const docRef = await addDoc(collection(db, COLLECTIONS.DAILY_SUMMARIES), {
+      ...summary,
+      date: new Date().toISOString().split('T')[0],
+      createdAt: new Date().toISOString()
+    });
+    return { success: true, id: docRef.id };
+  } catch (error) {
+    console.error('Error adding daily summary:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function getDailySummaries(limitCount = 30) {
+  try {
+    const q = query(
+      collection(db, COLLECTIONS.DAILY_SUMMARIES),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+    const snapshot = await getDocs(q);
+    const summaries = [];
+    snapshot.forEach(doc => {
+      summaries.push({ id: doc.id, ...doc.data() });
+    });
+    return { success: true, data: summaries };
+  } catch (error) {
+    console.error('Error fetching daily summaries:', error);
+    return { success: false, error: error.message, data: [] };
+  }
+}
 
 // Lead operations
 export async function addLead(leadData) {

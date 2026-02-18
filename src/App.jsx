@@ -148,7 +148,7 @@ function App() {
           </div>
           <div className="flex items-center gap-3">
             <button onClick={() => setLastUpdated(new Date())} className={`p-2 rounded-lg ${theme === 'light' ? 'hover:bg-slate-100' : 'hover:bg-slate-700'}`}>
-              <RefreshCw className="w-5 h-5" />
+              <Loader2 className="w-5 h-5" />
             </button>
             <button className={`p-2 rounded-lg relative ${theme === 'light' ? 'hover:bg-slate-100' : 'hover:bg-slate-700'}`}>
               <Bell className="w-5 h-5" />

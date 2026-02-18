@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, Brain, Zap, RefreshCw, FileText } from 'lucide-react';
+import { TrendingUp, TrendingDown, Brain, Zap, FileText } from 'lucide-react';
 import { getTasks, getMetrics } from '../utils/firebase';
 
 const defaultMetrics = {
@@ -85,7 +85,6 @@ function Dashboard({ tasks = {}, theme }) {
           <p className={`text-xs ${theme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>In Progress</p>
         </div>
         <div className={`card p-4 text-center ${theme === 'light' ? 'bg-white' : 'bg-slate-800'}`}>
-          <RefreshCw className={`w-8 h-8 text-yellow-400 mx-auto mb-2 ${isLoading ? 'animate-spin' : ''}`} />
           <div className="text-2xl font-bold">{lastSync.toLocaleTimeString()}</div>
           <p className={`text-xs ${theme === 'light' ? 'text-slate-500' : 'text-slate-400'}`}>Last Sync</p>
         </div>

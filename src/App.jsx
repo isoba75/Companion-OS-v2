@@ -133,7 +133,10 @@ function App() {
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-24 md:pb-0 overflow-auto">
         <header className={`hidden md:flex items-center justify-between px-6 py-4 sticky top-0 z-10 ${theme === 'light' ? 'bg-white/80 backdrop-blur-xl border-b border-slate-200' : 'bg-slate-800/80 backdrop-blur-xl border-b border-slate-700'}`}>
           <div>
-            <h2 className="font-semibold text-lg">{navItems.find(item => item.id === activeView)?.label}</h2>
+            <div className="flex items-center gap-2">
+              <span className="text-primary-400">🤝</span>
+              <h2 className="font-semibold text-lg">{navItems.find(item => item.id === activeView)?.label}</h2>
+            </div>
             <p className={`text-xs ${theme === 'light' ? 'text-slate-400' : 'text-slate-500'}`}>Last updated: {lastUpdated.toLocaleTimeString()}</p>
           </div>
           <div className="flex items-center gap-3">
@@ -160,8 +163,11 @@ function Logo({ theme, compact }) {
       </div>
       {!compact && (
         <div>
-          <h1 className="font-bold text-lg">Second Brain</h1>
-          <p className={`text-xs ${theme === 'light' ? 'text-slate-400' : 'text-slate-500'}`}>UN Mission Assistant</p>
+          <div className="flex items-center gap-2">
+            <h1 className="font-bold text-lg">JC</h1>
+            <span className="text-primary-400">🤝</span>
+          </div>
+          <p className={`text-xs ${theme === 'light' ? 'text-slate-400' : 'text-slate-500'}`}>Job Companion</p>
         </div>
       )}
     </div>

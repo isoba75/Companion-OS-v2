@@ -4,7 +4,7 @@
  */
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc, query, where, orderBy, limit } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBu4JBoV3J20mhNgHPDgAWdHJQ-m6uF3do",
@@ -189,6 +189,34 @@ export async function deleteTask(taskId) {
   } catch (error) {
     console.error('Error deleting task:', error);
     return { success: false, error: error.message };
+  }
+}
+
+// Real-time task listener
+export function subscribeToTasks(callback) {
+  try {
+    const q = query(collection(db, COLLECTIONS.TASKS), orderBy('createdAt', 'desc'));
+    return onSnapshot(q, (snapshot) => {
+      const tasks = {
+        backlog: [],
+        thisWeek: [],
+        doing: [],
+        done: []
+      };
+      snapshot.forEach((doc) => {
+        const task = { id: doc.id, ...doc.data() };
+        if (tasks[task.status]) {
+          tasks[task.status].push(task);
+        }
+      });
+      callback({ success: true, data: tasks });
+    }, (error) => {
+      console.error('Task subscription error:', error);
+      callback({ success: false, error: error.message, data: null });
+    });
+  } catch (error) {
+    console.error('Error setting up task subscription:', error);
+    return () => {};
   }
 }
 

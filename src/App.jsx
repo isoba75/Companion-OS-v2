@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import KanbanBoard from './components/KanbanBoard';
-import { getTasks, createTask, updateTaskStatus, deleteTask } from './utils/firebase';
+import { getTasks, createTask, updateTaskStatus, deleteTask, subscribeToTasks } from './utils/firebase';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -32,7 +32,14 @@ function App() {
   const [taskViewMode, setTaskViewMode] = useState('user');
 
   useEffect(() => {
-    loadTasks();
+    // Real-time task sync
+    const unsubscribe = subscribeToTasks((result) => {
+      if (result.success && result.data) {
+        setTasks(result.data);
+        setLastUpdated(new Date());
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -41,39 +48,22 @@ function App() {
     document.documentElement.classList.toggle('dark', savedTheme === 'dark');
   }, []);
 
-  const loadTasks = async () => {
-    setIsLoadingTasks(true);
-    const result = await getTasks();
-    if (result.success && result.data) {
-      setTasks(result.data);
-      setLastUpdated(new Date());
-    }
-    setIsLoadingTasks(false);
-  };
-
   const handleCreateTask = async (taskData) => {
-    const result = await createTask(taskData);
-    if (result.success) loadTasks();
+    await createTask(taskData);
   };
 
   const handleMoveTask = async (taskId, newStatus) => {
     await updateTaskStatus(taskId, newStatus);
-    setTasks(prev => {
-      const newTasks = { ...prev };
-      Object.keys(newTasks).forEach(status => {
-        newTasks[status] = newTasks[status].filter(t => t.id !== taskId);
-      });
-      return newTasks;
-    });
   };
 
   const handleDeleteTask = async (taskId) => {
     await deleteTask(taskId);
-    loadTasks();
   };
 
   useEffect(() => {
-    const interval = setInterval(() => setLastUpdated(new Date()), 60000);
+    const interval = setInterval(() => {
+      setLastUpdated(new Date());
+    }, 30000); // Update timestamp display
     return () => clearInterval(interval);
   }, []);
 

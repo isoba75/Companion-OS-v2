@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, CheckCircle, Clock, AlertCircle, Trash2 } from 'lucide-react';
+import { Plus, CheckCircle, Clock, AlertCircle, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const columnConfig = {
   backlog: { title: 'Backlog', color: 'red', icon: AlertCircle },
@@ -44,8 +44,8 @@ function AddTaskModal({ isOpen, onClose, onAdd }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={onClose}>
-      <div className="bg-slate-800 rounded-xl p-6 w-full max-w-md mx-4" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={onClose}>
+      <div className="bg-slate-800 rounded-xl p-6 w-full max-w-md" onClick={e => e.stopPropagation()}>
         <h3 className="text-lg font-bold text-white mb-4">Add New Task</h3>
         <input
           type="text"
@@ -60,7 +60,7 @@ function AddTaskModal({ isOpen, onClose, onAdd }) {
             <button
               key={p}
               onClick={() => setPriority(p)}
-              className={`px-3 py-1 rounded-lg text-sm capitalize transition-all ${
+              className={`flex-1 py-2 rounded-lg text-sm capitalize transition-all ${
                 priority === p 
                   ? priorityColors[p] 
                   : 'bg-slate-700 text-slate-400'
@@ -86,7 +86,8 @@ function AddTaskModal({ isOpen, onClose, onAdd }) {
 }
 
 function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoading }) {
-  const [columns] = useState(['backlog', 'thisWeek', 'doing', 'done']);
+  const columns = Object.keys(columnConfig);
+  const [currentColumn, setCurrentColumn] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
   const [newTask, setNewTask] = useState({ title: '', priority: 'medium' });
 
@@ -109,10 +110,13 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
     setNewTask({ title: '', priority: 'medium' });
   };
 
+  const goPrev = () => setCurrentColumn(prev => Math.max(0, prev - 1));
+  const goNext = () => setCurrentColumn(prev => Math.min(columns.length - 1, prev + 1));
+
   return (
     <div className="h-full">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-xl font-bold text-white flex items-center gap-2">
             <span>📋</span>
@@ -124,15 +128,80 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
         </div>
         <button 
           onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-all"
+          className="flex items-center gap-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-all text-sm"
         >
           <Plus className="w-4 h-4" />
-          Add Task
+          Add
         </button>
       </div>
 
-      {/* Kanban Columns */}
-      <div className="grid grid-cols-4 gap-4 h-[calc(100%-100px)]">
+      {/* Mobile Column Navigation */}
+      <div className="md:hidden flex items-center justify-between mb-4">
+        <button 
+          onClick={goPrev} 
+          disabled={currentColumn === 0}
+          className="p-2 bg-slate-800 rounded-lg disabled:opacity-50"
+        >
+          <ChevronLeft className="w-5 h-5 text-white" />
+        </button>
+        <span className="text-white font-medium">
+          {columnConfig[columns[currentColumn]].title}
+        </span>
+        <button 
+          onClick={goNext} 
+          disabled={currentColumn === columns.length - 1}
+          className="p-2 bg-slate-800 rounded-lg disabled:opacity-50"
+        >
+          <ChevronRight className="w-5 h-5 text-white" />
+        </button>
+      </div>
+
+      {/* Mobile View - Single Column Carousel */}
+      <div className="md:hidden">
+        {columns.map((columnId, idx) => {
+          const config = columnConfig[columnId];
+          const columnTasks = tasks[columnId] || [];
+          const Icon = config.icon;
+          
+          return (
+            <div 
+              key={columnId}
+              className={`${idx === currentColumn ? 'block' : 'hidden'}`}
+            >
+              <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-700">
+                  <div className="flex items-center gap-2">
+                    <Icon className={`w-4 h-4 text-${config.color}-400`} />
+                    <h3 className="font-semibold text-white">{config.title}</h3>
+                    <span className={`px-2 py-0.5 rounded-full text-xs bg-${config.color}-500/20 text-${config.color}-400`}>
+                      {columnTasks.length}
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  {columnTasks.map(task => (
+                    <TaskCard 
+                      key={task.id} 
+                      task={task} 
+                      theme={theme}
+                      onMove={onMoveTask}
+                      onDelete={onDeleteTask}
+                    />
+                  ))}
+                  {columnTasks.length === 0 && (
+                    <div className="text-center py-8 text-slate-500 text-sm">
+                      No tasks
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop View - Full Kanban */}
+      <div className="hidden md:grid grid-cols-4 gap-4 h-[calc(100%-120px)]">
         {columns.map(columnId => {
           const config = columnConfig[columnId];
           const columnTasks = tasks[columnId] || [];
@@ -141,7 +210,7 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
           return (
             <div 
               key={columnId}
-              className={`rounded-xl p-4 bg-slate-800/50 border border-slate-700`}
+              className={`rounded-xl p-4 bg-slate-800/50 border border-slate-700 overflow-y-auto`}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
                 e.preventDefault();
@@ -150,8 +219,7 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
                 handleDrop(tId, from, columnId);
               }}
             >
-              {/* Column Header */}
-              <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-700">
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-700 sticky top-0 bg-slate-800/50 z-10">
                 <div className="flex items-center gap-2">
                   <Icon className={`w-4 h-4 text-${config.color}-400`} />
                   <h3 className="font-semibold text-white">{config.title}</h3>
@@ -160,8 +228,6 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
                   </span>
                 </div>
               </div>
-
-              {/* Tasks */}
               <div className="space-y-3">
                 {columnTasks.map(task => (
                   <TaskCard 
@@ -181,6 +247,20 @@ function KanbanBoard({ tasks, theme, onMoveTask, onDeleteTask, onAddTask, isLoad
             </div>
           );
         })}
+      </div>
+
+      {/* Mobile Column Indicators */}
+      <div className="md:hidden flex justify-center gap-2 mt-4">
+        {columns.map((_, idx) => (
+          <div 
+            key={idx}
+            className={`w-2 h-2 rounded-full transition-all ${
+              idx === currentColumn 
+                ? 'bg-primary-500 w-6' 
+                : 'bg-slate-600'
+            }`}
+          />
+        ))}
       </div>
 
       {/* Add Task Modal */}

@@ -1,20 +1,15 @@
-/**
- * Chat Widget - Direct chat with AI assistant
- * Uses Google Sheets as the message transport
- */
-
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, X, Send, Bot, User, Loader2 } from 'lucide-react';
-
-const CHAT_SHEET_URL = 'YOUR_GOOGLE_SHEET_URL_HERE';
+import { MessageCircle, X, Send, Bot, User } from 'lucide-react';
+import { sendChatMessage, getChatMessages, collection, query, orderBy, limit, onSnapshot, where, db } from '../utils/firebase';
 
 function ChatWidget({ theme = 'light' }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [sessionId] = useState(() => `mc_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
   const messagesEndRef = useRef(null);
-  const pollIntervalRef = useRef(null);
+  const unsubscribeRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -24,83 +19,92 @@ function ChatWidget({ theme = 'light' }) {
     scrollToBottom();
   }, [messages, isOpen]);
 
-  // Poll for new messages every 3 seconds
+  // Listen for real-time messages from Firestore
   useEffect(() => {
     if (!isOpen) {
-      if (pollIntervalRef.current) {
-        clearInterval(pollIntervalRef.current);
-        pollIntervalRef.current = null;
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
       }
       return;
     }
 
-    // Initial fetch
-    fetchMessages();
+    try {
+      const q = query(
+        collection(db, 'mission_control_chat'),
+        where('sessionId', '==', sessionId),
+        orderBy('timestamp', 'asc'),
+        limit(50)
+      );
 
-    // Poll every 3 seconds
-    pollIntervalRef.current = setInterval(fetchMessages, 3000);
+      unsubscribeRef.current = onSnapshot(q, (snapshot) => {
+        const msgs = [];
+        snapshot.forEach((doc) => {
+          msgs.push({ id: doc.id, ...doc.data() });
+        });
+        setMessages(msgs);
+      });
+    } catch (error) {
+      console.log('Firestore not configured - using demo mode');
+    }
 
     return () => {
-      if (pollIntervalRef.current) {
-        clearInterval(pollIntervalRef.current);
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
       }
     };
-  }, [isOpen]);
-
-  const fetchMessages = async () => {
-    try {
-      // For now, use local storage as demo
-      const stored = localStorage.getItem('chat_messages');
-      if (stored) {
-        const msgs = JSON.parse(stored);
-        setMessages(msgs);
-      }
-    } catch (e) {
-      console.log('Fetching messages...');
-    }
-  };
+  }, [isOpen, sessionId]);
 
   const handleSend = async () => {
     if (!inputText.trim()) return;
-    
+
     const userMsg = {
       id: Date.now(),
       type: 'user',
       text: inputText,
-      time: new Date().toISOString()
+      sessionId,
+      timestamp: Date.now(),
+      createdAt: new Date().toISOString()
     };
-    
-    const updated = [...messages, userMsg];
-    setMessages(updated);
-    localStorage.setItem('chat_messages', JSON.stringify(updated));
+
+    setMessages(prev => [...prev, userMsg]);
     setInputText('');
     setIsTyping(true);
-    
-    // Simulate AI response for demo
+
+    // Try to save to Firestore
+    try {
+      await sendChatMessage(inputText, sessionId);
+    } catch (error) {
+      console.log('Firestore not configured - message saved locally only');
+    }
+
+    // Simulate AI response (demo mode)
     setTimeout(() => {
       const responses = [
         "Thanks for your message! I'm your AI assistant.",
         "Got it! How can I help you today?",
         "Thanks for reaching out! I'm here to assist.",
-        "I understand. Let me help you with that."
+        "I understand. Let me help you with that.",
+        "Hi! I'm here to help with mission reports, tasks, and more."
       ];
       
       const botMsg = {
         id: Date.now() + 1,
         type: 'assistant',
         text: responses[Math.floor(Math.random() * responses.length)],
-        time: new Date().toISOString()
+        sessionId,
+        timestamp: Date.now() + 1000,
+        createdAt: new Date().toISOString()
       };
       
-      const final = [...updated, botMsg];
-      setMessages(final);
-      localStorage.setItem('chat_messages', JSON.stringify(final));
+      setMessages(prev => [...prev, botMsg]);
       setIsTyping(false);
-    }, 2000);
+    }, 1500);
   };
 
-  const formatTime = (timeStr) => {
-    const date = new Date(timeStr);
+  const formatTime = (timestamp) => {
+    if (!timestamp) return '--:--';
+    const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
@@ -184,7 +188,7 @@ function ChatWidget({ theme = 'light' }) {
                   }`}>
                     <p className="text-sm leading-relaxed">{msg.text}</p>
                     <p className={`text-[10px] mt-1 ${msg.type === 'user' ? 'text-blue-100' : 'text-slate-400'}`}>
-                      {formatTime(msg.time)}
+                      {formatTime(msg.timestamp)}
                     </p>
                   </div>
                 </div>

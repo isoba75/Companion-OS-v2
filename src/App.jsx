@@ -29,7 +29,6 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState(3);
   const [isLoadingTasks, setIsLoadingTasks] = useState(false);
-  const [taskViewMode, setTaskViewMode] = useState('user');
 
   useEffect(() => {
     // Real-time task sync
@@ -90,8 +89,6 @@ function App() {
           onDeleteTask={handleDeleteTask}
           onAddTask={handleCreateTask}
           isLoading={isLoadingTasks}
-          viewMode={taskViewMode}
-          setViewMode={setTaskViewMode}
         />
       );
       case 'second-brain': return <SecondBrain theme={theme} />;

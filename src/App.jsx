@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import KanbanBoard from './components/KanbanBoard';
+import ChatWidget from './components/ChatWidget';
 import { getTasks, createTask, updateTaskStatus, deleteTask } from './utils/firebase';
 
 const navItems = [
@@ -157,6 +158,7 @@ function App() {
           </div>
         </header>
         <div className="p-4 md:p-6 pb-safe">{renderView()}</div>
+        <ChatWidget theme={theme} />
       </main>
     </div>
   );

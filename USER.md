@@ -2,8 +2,8 @@
 
 ## Basics
 
-- **Name:** (to be filled)
-- **What to call them:** (to be filled)
+- **Name:** Ismaila Ba
+- **What to call them:** Iso
 - **Pronouns:** (optional)
 - **Timezone:** Baghdad (UTC+3)
 - **Role:** Senior Operations Officer, UNESCO Iraq

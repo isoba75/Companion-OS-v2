@@ -25,63 +25,8 @@ export const COLLECTIONS = {
   LEADS: 'leads',
   TASKS: 'tasks',
   METRICS: 'metrics',
-  DECISIONS: 'decisions',
-  CHAT: 'mission_control_chat'
+  DECISIONS: 'decisions'
 };
-
-// Chat operations
-export async function sendChatMessage(text, sessionId = 'web') {
-  try {
-    const docRef = await addDoc(collection(db, COLLECTIONS.CHAT), {
-      type: 'user',
-      text,
-      sessionId,
-      createdAt: new Date().toISOString(),
-      timestamp: Date.now()
-    });
-    return { success: true, id: docRef.id };
-  } catch (error) {
-    console.error('Error sending message:', error);
-    return { success: false, error: error.message };
-  }
-}
-
-export async function getChatMessages(sessionId = 'web', limitCount = 50) {
-  try {
-    const q = query(
-      collection(db, COLLECTIONS.CHAT),
-      where('sessionId', '==', sessionId),
-      orderBy('timestamp', 'asc'),
-      limit(limitCount)
-    );
-    const snapshot = await getDocs(q);
-    const messages = [];
-    snapshot.forEach(doc => {
-      messages.push({ id: doc.id, ...doc.data() });
-    });
-    return { success: true, data: messages };
-  } catch (error) {
-    console.error('Error fetching messages:', error);
-    return { success: false, error: error.message, data: [] };
-  }
-}
-
-export async function addChatResponse(text, originalMessageId, sessionId = 'assistant') {
-  try {
-    const docRef = await addDoc(collection(db, COLLECTIONS.CHAT), {
-      type: 'assistant',
-      text,
-      originalMessageId,
-      sessionId,
-      createdAt: new Date().toISOString(),
-      timestamp: Date.now()
-    });
-    return { success: true, id: docRef.id };
-  } catch (error) {
-    console.error('Error adding response:', error);
-    return { success: false, error: error.message };
-  }
-}
 
 // Lead operations
 export async function addLead(leadData) {
